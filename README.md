@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 个人账单管理系统
 
-## Getting Started
+一个用于学习完整全栈开发流程的个人账单管理项目。
 
-First, run the development server:
+## 功能
+
+- 邮箱和密码登录
+- 登录会话与退出登录
+- 未登录用户访问限制
+- 新增、查询、编辑和删除账单
+- 按账单标题筛选
+- 表单验证与错误处理
+- MySQL 数据持久化
+
+## 技术栈
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- MySQL
+- Auth.js
+- bcryptjs
+- Zod
+
+## 数据流
+
+```text
+浏览器
+→ Next.js 页面和 API
+→ Zod 数据验证
+→ 参数化 SQL
+→ MySQL
+→ JSON 响应
+→ React 更新页面
+
+```
+
+## 本地运行
+
+安装依赖：
+
+```bash
+npm install
+```
+
+根据 `.env.example` 创建 `.env.local`，并填写本地数据库配置和 `AUTH_SECRET`。
+
+启动开发服务器：
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 环境变量
 
-## Learn More
+项目需要以下环境变量：
 
-To learn more about Next.js, take a look at the following resources:
+```env
+MYSQL_HOST=
+MYSQL_PORT=
+MYSQL_USER=
+MYSQL_PASSWORD=
+MYSQL_DATABASE=
+AUTH_SECRET=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+不要把 `.env.local`、数据库密码或认证密钥提交到 GitHub。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 安全措施
 
-## Deploy on Vercel
+- 密码使用 bcrypt 哈希保存
+- API 使用参数化 SQL
+- 输入数据使用 Zod 验证
+- 账单页面和 API 需要登录
+- 敏感配置保存在环境变量中
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 当前限制
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 测试用户需要预先写入数据库
+- 暂未提供公开注册功能
+- 当前使用本地 MySQL
+- 尚未完成云端部署
