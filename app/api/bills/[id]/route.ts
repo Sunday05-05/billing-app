@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { ResultSetHeader } from "mysql2";
-import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { getSessionUserId } from "@/lib/session-user";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -23,9 +23,9 @@ export async function PUT(
   { params }: BillRouteContext,
 ) {
   try {
-    const session = await auth();
+    const userId = await getSessionUserId();
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: "请先登录" },
         { status: 401 },
@@ -67,9 +67,9 @@ export async function PUT(
           category = ?,
           status = ?,
           bill_date = ?
-        WHERE id = ?
+        WHERE id = ? AND user_id = ?
       `,
-      [title, amountCents, category, status, billDate, billId],
+      [title, amountCents, category, status, billDate, billId, userId],
     );
 
     if (updateResult.affectedRows === 0) {
@@ -102,9 +102,9 @@ export async function DELETE(
   { params }: BillRouteContext,
 ) {
   try {
-    const session = await auth();
+    const userId = await getSessionUserId();
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: "请先登录" },
         { status: 401 },
@@ -122,8 +122,8 @@ export async function DELETE(
     }
 
     const [result] = await db.execute<ResultSetHeader>(
-      "DELETE FROM bills WHERE id = ?",
-      [billId],
+      "DELETE FROM bills WHERE id = ? AND user_id = ?",
+      [billId, userId],
     );
 
     if (result.affectedRows === 0) {
