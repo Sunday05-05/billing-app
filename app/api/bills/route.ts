@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { getSessionUserId } from "@/lib/session-user";
 import { z } from "zod";
 import type { ResultSetHeader } from "mysql2";
 
@@ -16,9 +16,9 @@ const createBillSchema = z.object({
 
 export async function GET() {
   try {
-    const session = await auth();
+    const userId = await getSessionUserId();
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: "请先登录" },
         { status: 401 },
@@ -35,8 +35,9 @@ export async function GET() {
         DATE_FORMAT(bill_date, '%Y-%m-%d') AS bill_date,
         created_at
       FROM bills
+      WHERE user_id = ?
       ORDER BY id DESC
-    `);
+    `, [userId]);
 
     return NextResponse.json(rows);
   } catch (error) {
@@ -51,9 +52,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await auth();
+    const userId = await getSessionUserId();
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { error: "请先登录" },
         { status: 401 },
@@ -79,11 +80,11 @@ export async function POST(request: Request) {
     const [insertResult] = await db.execute<ResultSetHeader>(
       `
         INSERT INTO bills
-          (title, amount_cents, category, status, bill_date)
+          (user_id, title, amount_cents, category, status, bill_date)
         VALUES
-          (?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?)
       `,
-      [title, amountCents, category, status, billDate],
+      [userId, title, amountCents, category, status, billDate],
     );
 
     return NextResponse.json(

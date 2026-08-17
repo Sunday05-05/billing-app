@@ -11,6 +11,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
 
+  callbacks: {
+    jwt({ token, user }) {
+      if (user?.id) {
+        token.userId = user.id;
+      }
+
+      return token;
+    },
+
+    session({ session, token }) {
+      if (session.user && typeof token.userId === "string") {
+        session.user.id = token.userId;
+      }
+
+      return session;
+    },
+  },
+
   providers: [
     Credentials({
       name: "邮箱密码",

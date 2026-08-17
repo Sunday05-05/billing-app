@@ -9,7 +9,7 @@ export default function Home() {
         记录、查看和筛选日常账单，逐步学习完整的全栈开发流程。
       </p>
 
-      <nav className="mt-8 grid gap-4 sm:grid-cols-2" aria-label="主要页面">
+      <nav className="mt-8 grid gap-4 sm:grid-cols-3" aria-label="主要页面">
         <Link
           href="/bills"
           className="rounded-lg border p-6 transition hover:border-blue-500 hover:bg-blue-50"
@@ -26,7 +26,17 @@ export default function Home() {
         >
           <span className="text-xl font-semibold">登录</span>
           <span className="mt-2 block text-sm text-gray-600">
-            登录功能将在后续阶段完成
+            使用已有账户进入系统
+          </span>
+        </Link>
+
+        <Link
+          href="/register"
+          className="rounded-lg border p-6 transition hover:border-blue-500 hover:bg-blue-50"
+        >
+          <span className="text-xl font-semibold">注册</span>
+          <span className="mt-2 block text-sm text-gray-600">
+            创建独立的个人账户
           </span>
         </Link>
       </nav>
